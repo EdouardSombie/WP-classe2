@@ -2,6 +2,7 @@
 
 add_theme_support( 'custom-logo' );
 add_theme_support( 'post-thumbnails' );
+add_theme_support( 'widgets' );
 
 // Enregistrement de l'emplacement des menus
 
@@ -17,7 +18,12 @@ add_action( 'after_setup_theme', 'esgi_register_nav_menus', 0 );
 // Intégration des assets js et css
 
 function esgi_enqueue_assets() {
-    wp_enqueue_style( 'main', get_stylesheet_uri() );
+    wp_enqueue_style('main', get_stylesheet_uri() );
+    wp_enqueue_script('mainJS', get_template_directory_uri() . '/assets/js/main.js');
+    $variables = [
+        'ajaxURL' => admin_url('admin-ajax.php')
+    ];
+    wp_localize_script('mainJS', 'esgi', $variables);
 }
 add_action( 'wp_enqueue_scripts', 'esgi_enqueue_assets' );
 
@@ -43,9 +49,137 @@ function getIcon($name){
 
 	return $$name;
 
+}
+
+
+// AJOUT DE PARAMETRES DE THEMES
+
+function esgi_customize_register($wp_customize) {
+
+    $wp_customize->add_section( 'esgi-custom', [
+      'title' => __('Personnalisation du thème'),
+      'description' => __('Paramètres du thème.'),
+      'priority' => 1,
+      'capability' => 'edit_theme_options',
+    ] );
+
+    $wp_customize->add_setting( 'main-color', [
+      'default' => '#3F51B5',
+      'sanitize_callback' => 'sanitize_hex_color',
+    ] );
+
+    $wp_customize->add_control(
+        new WP_Customize_Color_Control( 
+        $wp_customize, 
+        'main-color', 
+        [
+            'label'      => __( 'Couleur principale', 'ESGI' ),
+            'section'    => 'esgi-custom',
+            'settings'   => 'main-color',
+        ] ) );
+
+
+    $wp_customize->add_setting( 'is_dark', [
+      'default' => false,
+      'sanitize_callback' => 'sanitize_checkbox',
+    ] );
+
+    $wp_customize->add_control( 'is_dark', [
+      'type' => 'checkbox',
+      'section' => 'esgi-custom', // Add a default or your own section
+      'label' => __( 'Thème sombre' ),
+      'description' => __( 'Activer la version sombre du thème.' ),
+    ] );
+
+    $wp_customize->add_setting( 'has_sidebar', [
+      'default' => false,
+      'sanitize_callback' => 'sanitize_checkbox',
+    ] );
+
+    $wp_customize->add_control( 'has_sidebar', [
+      'type' => 'checkbox',
+      'section' => 'esgi-custom', // Add a default or your own section
+      'label' => __( 'Afficher la barre latérale' ),
+      'description' => __( 'Afficher la barre latérale sur les pages d\'article.' ),
+    ] );
 
 }
 
+add_action('customize_register', 'esgi_customize_register');
+
+// fonction sanitizer du type de valeur
+function sanitize_checkbox($val){
+    return (isset($val) && true == $val) ? $val : false;
+}
+
+
+// Modifier le comportement de la fonction body_class()
+// En surchargeant le filtre body_class
+
+add_filter('body_class', 'esgi_body_class');
+function esgi_body_class($classes){
+    $is_dark = get_theme_mod('is_dark', false);
+    if($is_dark){
+        $classes[] = 'dark';
+    }
+    return $classes;
+}
+
+
+
+function esgi_css_output(){
+    $main_color = get_theme_mod('main-color', '#3F51B5');
+    echo '<style>
+            html{
+               --main-color: ' . $main_color . ';
+            }
+        </style>';
+}
+add_action('wp_head', 'esgi_css_output');
+
+
+// WIDGETS
+
+function esgi_widgets_init(){
+    if ( function_exists('register_sidebar') )
+      register_sidebar([
+        'id' => 'zone-1',
+        'name' => 'Zone des widgets de la sidebar',
+        'before_widget' => '<div class = "widget-zone">',
+        'after_widget' => '</div>',
+        'before_title' => '<h3>',
+        'after_title' => '</h3>',
+      ]
+    );
+}
+add_action('widgets_init', 'esgi_widgets_init');
+
+
+
+// ROUTES AJAX
+add_action( 'wp_ajax_load_posts', 'ajax_load_posts' );
+add_action( 'wp_ajax_nopriv_load_posts', 'ajax_load_posts' );
+
+
+function ajax_load_posts(){
+    // page demandée
+    $paged = $_POST['page']; 
+    $args = [
+        'post_type' => 'post',
+        'posts_per_page' => 2,
+        'post_status' => 'publish',
+        'paged' => $paged
+    ];
+    $the_query = new WP_Query($args);
+    // Mise en buffer
+    ob_start(); // ouverture du buffer
+    include('template-parts/post-list.php');
+    // Récupération du contenu du buffer
+    echo ob_get_clean(); // fermeture du buffer
+    wp_die();
+}
+
+    
 
 
 

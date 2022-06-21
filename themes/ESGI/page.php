@@ -1,14 +1,20 @@
 <?php get_header() ?>
 	<main>
 		<div class="container">
-			<?php
-			if(is_front_page()){
-				include('template-parts/identity-card.php');
-			}else{
-				echo '<h1>' . $post->post_title . '</h1>';
-				the_content();
-			}
-			?>
+			<div class="row">
+				<div class="col-md-6 offset-3">
+					<?php
+					if(is_front_page()){
+						include('template-parts/identity-card.php');
+					}else{
+						echo '<h1 class="page-title">' . $post->post_title . '</h1>';
+						echo '<div class="page-content">';
+						the_content();
+						echo '</div>';
+					}
+					?>
+				</div>
+			</div>
 		</div>
 	</main>
 <?php get_footer() ?>

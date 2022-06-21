@@ -1,0 +1,77 @@
+@function rem($val){
+	@return $val / 16 * 1rem;
+}
+
+
+@mixin reset-list{
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+@mixin social-list{
+	@include reset-list;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: rem(25);
+	a{
+		svg{
+			height: rem(18);
+			width: auto;
+			path{
+				transition: fill 0.3s;
+				fill: var(--text-color);
+			}
+		}
+		&:hover{
+			path{
+				fill: var(--main-color);
+			}
+		}
+	}
+}
+
+@mixin text1{
+	font-family: $font2;
+	font-size: rem(25);
+	line-height: 1.1;
+	letter-spacing: 0.1em;
+}
+
+@mixin text2{
+	font-family: $font3;
+	font-size: rem(16);
+	line-height: rem(27);
+	letter-spacing: 0;
+}
+
+@mixin text3{
+	font-family: $font2;
+	font-size: rem(16);
+	line-height: 1.49;
+	letter-spacing: 0.1em;
+}
+
+@mixin text4{
+	font-size: rem(13);
+	line-height: rem(21);
+	font-weight: 400;
+	font-family: $font2;
+	letter-spacing: 0.05em
+}
+
+@mixin text5{
+	font-family: $font1;
+	font-size: rem(16);
+	line-height: rem(27);
+	letter-spacing: 0.03em;
+}
+
+@mixin text6{
+	color: var(--grey);
+	font-size: rem(13);
+	line-height: 1.75;
+	letter-spacing: 0.05em;
+	font-family: $font2;
+}

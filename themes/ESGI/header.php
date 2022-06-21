@@ -11,16 +11,20 @@
 	
 	<header id="site-header">
 		<div class="container">
-			<?php 
-				// Afficher le menu principal
-				if ( has_nav_menu('primary')){
-					wp_nav_menu([
-							'theme_location' => 'primary',
-							'container' => 'nav',
-							'container_class' => 'main-nav'
-						]);
-				}
-			?>
+			<div class="row">
+				<div class="col-md-6 offset-3">
+					<?php 
+						// Afficher le menu principal
+						if ( has_nav_menu('primary')){
+							wp_nav_menu([
+									'theme_location' => 'primary',
+									'container' => 'nav',
+									'container_class' => 'main-nav'
+								]);
+						}
+					?>
+				</div>
+			</div>
 		</div>
 		
 

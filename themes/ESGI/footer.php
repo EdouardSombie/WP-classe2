@@ -1,8 +1,13 @@
-		<footer id="site-footer">
-			<div class="container">
-				WP-ESGI theme by YoThemes
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 offset-3">
+					<footer id="site-footer">
+						WP-ESGI theme by YoThemes
+						<?php get_search_form() ?>
+					</footer>
+				</div>
 			</div>
-		</footer>
+		</div>
 		<?php wp_footer() ?>
 	</body>
 </html>

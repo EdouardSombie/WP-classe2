@@ -1,0 +1,32 @@
+.identity-card{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	padding: rem(94) 0 rem(33);
+	img{
+		width: rem(102);
+		height: rem(102);
+		object-fit: cover;
+		object-position: center;
+		border-radius: 1000px;
+		margin-bottom: rem(30);
+	}
+
+	h1{
+		@include text1;
+		margin-bottom: rem(33);
+	}
+
+	h2{
+		@include text2;
+		margin-bottom: rem(33);
+	}
+
+	footer{
+		nav{
+			ul{
+				@include social-list;
+			}
+		}
+	}
+}
